@@ -1,4 +1,4 @@
-package configs;
+package configs.OAuth2;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

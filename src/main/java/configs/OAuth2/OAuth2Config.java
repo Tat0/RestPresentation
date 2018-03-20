@@ -1,4 +1,4 @@
-package configs;
+package configs.OAuth2;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -10,15 +10,13 @@ import org.springframework.security.oauth2.config.annotation.configurers.ClientD
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
-import services.UserService;
 
-//uncomment here too for OAuth2
 @Configuration
 @EnableAuthorizationServer
 public class OAuth2Config extends AuthorizationServerConfigurerAdapter{
 
     @Autowired
-    private UserService userService;
+    private LoginService loginService;
 
     @Autowired
     private AuthenticationManager authenticationManager;
@@ -33,7 +31,7 @@ public class OAuth2Config extends AuthorizationServerConfigurerAdapter{
     @Override
     public void configure(AuthorizationServerEndpointsConfigurer configurer) throws Exception {
         configurer.authenticationManager(authenticationManager);
-        configurer.userDetailsService(userService);
+        configurer.userDetailsService(loginService);
     }
 
     @Override
