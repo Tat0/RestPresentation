@@ -12,8 +12,8 @@ import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
 
 //uncomment to get authentication
-//@Configuration
-//@EnableWebSecurity
+@Configuration
+@EnableWebSecurity
 public class SecurityConfig  extends WebSecurityConfigurerAdapter{
 
     @Autowired

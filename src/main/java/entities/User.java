@@ -1,10 +1,12 @@
 package entities;
 
 public class User {
-    private final long id;
+    private long id;
     private String userName;
     private String role;
     private boolean active;
+
+    public User() {};
 
     public User(long id){
         this.id = id;

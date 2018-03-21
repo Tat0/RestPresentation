@@ -5,7 +5,7 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.E
 
 @SpringBootApplication
 //uncomment to get OAuth2
-@EnableResourceServer
+//@EnableResourceServer
 @ComponentScan(value = {"controllers", "services", "configs"})
 public class Application {
     public static void main(String[] args){
