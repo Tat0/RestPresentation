@@ -33,11 +33,11 @@ public class UserService {
 
 
     public User getUserWithId(long id) {
-        return userList.stream().filter(u -> u.getId() == id).findFirst().get();
+        return userList.stream().filter(u -> u.getUserId() == id).findFirst().get();
     }
 
     public void updateUser(User user) {
-        User nativeUser = userList.stream().filter(u -> u.getId() == user.getId()).findFirst().get();
+        User nativeUser = userList.stream().filter(u -> u.getUserId() == user.getUserId()).findFirst().get();
         nativeUser.setUserName(user.getUserName());
         nativeUser.setRole(user.getRole());
         nativeUser.setActive(user.isActive());

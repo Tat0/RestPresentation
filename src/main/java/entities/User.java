@@ -1,7 +1,10 @@
 package entities;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class User {
-    private long id;
+    @JsonProperty("id")
+    private long userId;
     private String userName;
     private String role;
     private boolean active;
@@ -9,18 +12,22 @@ public class User {
     public User() {};
 
     public User(long id){
-        this.id = id;
+        this.userId = id;
     }
 
     public User(long id, String userName, String role, boolean active) {
-        this.id = id;
+        this.userId = id;
         this.userName = userName;
         this.role = role;
         this.active = active;
     }
 
-    public long getId() {
-        return id;
+    public long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(long id) {
+        this.userId =  userId;
     }
 
     public String getUserName() {

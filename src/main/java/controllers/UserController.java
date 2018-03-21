@@ -1,6 +1,7 @@
 package controllers;
 
 import entities.User;
+import entities.UserWithLinks;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -14,6 +15,8 @@ import services.UserService;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.*;
+
 @RestController
 public class UserController {
 
@@ -25,6 +28,16 @@ public class UserController {
         return userService.getAllUsers();
     }
 
+    @GetMapping("user/{value}")
+    public User getUser(@PathVariable long value) {
+        return userService.getUserWithId(value);
+    }
+
+    @PutMapping("v2/user/")
+    public ResponseEntity updateUser(@RequestBody User user){
+        userService.updateUser(user);
+        return ResponseEntity.ok().build();
+    }
 
     /*
     * Cache example
@@ -53,5 +66,25 @@ public class UserController {
     @GetMapping("v2/user/all")
     public List<User> getAllUsersV2 (){
         return userService.getAllUsersV2();
+    }
+
+    /*
+    * HATEOAS example version 2
+    * */
+
+    @GetMapping("user/{value}/org")
+    public User getUserOrg(@PathVariable long value) {
+        return userService.getUserWithId(value);
+    }
+
+    @GetMapping("v2/user/{value}")
+    public UserWithLinks getUserLinks(@PathVariable long value) {
+        User user = userService.getUserWithId(value);
+        UserWithLinks linkedUser = new UserWithLinks(user);
+        linkedUser.add(linkTo(methodOn(UserController.class).getUserLinks(value)).withSelfRel());
+        linkedUser.add(linkTo(methodOn(UserController.class).getUserOrg(value)).withRel("Get users organization"));
+        linkedUser.add(linkTo(methodOn(UserController.class).updateUser(null)).withRel("Update with PUT method"));
+        linkedUser.add(linkTo(methodOn(UserController.class).updateUser(null)).withRel("Delete with DELETE method"));
+        return linkedUser;
     }
 }
