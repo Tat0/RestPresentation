@@ -36,10 +36,18 @@ public class UserService {
         return userList.stream().filter(u -> u.getUserId() == id).findFirst().get();
     }
 
+    public void createUser(User user) {
+        userList.add((int) user.getUserId(), user);
+    }
+
     public void updateUser(User user) {
         User nativeUser = userList.stream().filter(u -> u.getUserId() == user.getUserId()).findFirst().get();
         nativeUser.setUserName(user.getUserName());
         nativeUser.setRole(user.getRole());
         nativeUser.setActive(user.isActive());
+    }
+
+    public void deleteUser(long id) {
+        userList.remove(id);
     }
 }

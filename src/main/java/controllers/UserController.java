@@ -6,8 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.CacheControl;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import services.UserService;
@@ -15,7 +13,8 @@ import services.UserService;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.*;
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
 @RestController
 public class UserController {
@@ -36,7 +35,7 @@ public class UserController {
     @PutMapping("v2/user/")
     public ResponseEntity updateUser(@RequestBody User user){
         userService.updateUser(user);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.status(204).build();
     }
 
     /*
@@ -55,7 +54,7 @@ public class UserController {
     @CacheEvict(value = "employeeID1", allEntries = true)
     public ResponseEntity clearCache(@RequestBody User user){
         userService.updateUser(user);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.status(204).build();
     }
 
     /*
@@ -92,14 +91,15 @@ public class UserController {
     * Allowed methods
     * */
 
-    @DeleteMapping("v2/user/")
-    public ResponseEntity deleteUser(@RequestBody User user){
-        return ResponseEntity.ok().build();
+    @DeleteMapping("v2/user/{id}")
+    public ResponseEntity deleteUser(@PathVariable long id){
+        userService.deleteUser(id);
+        return ResponseEntity.status(204).build();
     }
 
     @PostMapping("v2/user/")
     public ResponseEntity createUser(@RequestBody User user){
-        //userService.updateUser(user);
-        return ResponseEntity.ok().build();
+        userService.createUser(user);
+        return ResponseEntity.status(204).build();
     }
 }
