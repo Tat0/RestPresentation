@@ -1,7 +1,8 @@
-package com.controllers;
+package controllers;
 
-import com.entities.User;
-import com.entities.UserWithLinks;
+import entities.User;
+import entities.UserWithLinks;
+import services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -9,7 +10,6 @@ import org.springframework.http.CacheControl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import com.services.UserService;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;

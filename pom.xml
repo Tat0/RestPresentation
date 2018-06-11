@@ -24,6 +24,11 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+            <version>${spring-web}</version>
+        </dependency>
         <!--<dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
@@ -53,6 +58,7 @@
     <properties>
         <java.version>1.8</java.version>
         <rest-assured>3.0.0</rest-assured>
+        <spring-web>5.0.0.RELEASE</spring-web>
     </properties>
 
 

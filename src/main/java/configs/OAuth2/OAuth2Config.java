@@ -1,4 +1,4 @@
-package com.configs.OAuth2;
+package configs.OAuth2;
 
 /*
 //@Configuration

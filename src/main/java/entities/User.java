@@ -1,4 +1,4 @@
-package com.entities;
+package entities;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

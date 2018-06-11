@@ -1,7 +1,8 @@
-package com.controllers;
+package controllers;
 
-import com.entities.User;
-import com.services.UserService;
+import config.TestConfig;
+import entities.User;
+import services.UserService;
 import io.restassured.RestAssured;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -15,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
+@SpringBootTest(classes = TestConfig.class, webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 public class UserControllerRestAssuredTest {
     @MockBean
     private UserService userService;
@@ -42,7 +43,6 @@ public class UserControllerRestAssuredTest {
     public void okResponseTest() {
         RestAssured.given().when().get("/user/all").then().statusCode(200);
     }
-
 
 
 }

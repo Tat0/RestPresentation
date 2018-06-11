@@ -1,8 +1,8 @@
-package com.controllers;
+package controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.entities.User;
-import com.entities.UserWithLinks;
+import entities.User;
+import entities.UserWithLinks;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -14,7 +14,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import com.services.UserService;
+import services.UserService;
 
 import java.util.ArrayList;
 import java.util.List;

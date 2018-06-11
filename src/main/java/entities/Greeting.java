@@ -1,4 +1,4 @@
-package com.entities;
+package entities;
 
 public class Greeting {
     private final long id;
