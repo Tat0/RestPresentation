@@ -87,4 +87,19 @@ public class UserController {
         linkedUser.add(linkTo(methodOn(UserController.class).updateUser(null)).withRel("Delete with DELETE method"));
         return linkedUser;
     }
+
+    /*
+    * Allowed methods
+    * */
+
+    @DeleteMapping("v2/user/")
+    public ResponseEntity deleteUser(@RequestBody User user){
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("v2/user/")
+    public ResponseEntity createUser(@RequestBody User user){
+        //userService.updateUser(user);
+        return ResponseEntity.ok().build();
+    }
 }
