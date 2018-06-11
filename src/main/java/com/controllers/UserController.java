@@ -1,14 +1,15 @@
-package controllers;
+package com.controllers;
 
-import entities.User;
-import entities.UserWithLinks;
+import com.entities.User;
+import com.entities.UserWithLinks;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.CacheControl;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import services.UserService;
+import com.services.UserService;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -35,7 +36,7 @@ public class UserController {
     @PutMapping("v2/user/")
     public ResponseEntity updateUser(@RequestBody User user){
         userService.updateUser(user);
-        return ResponseEntity.status(204).build();
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     /*
@@ -54,7 +55,7 @@ public class UserController {
     @CacheEvict(value = "employeeID1", allEntries = true)
     public ResponseEntity clearCache(@RequestBody User user){
         userService.updateUser(user);
-        return ResponseEntity.status(204).build();
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     /*
@@ -94,12 +95,12 @@ public class UserController {
     @DeleteMapping("v2/user/{id}")
     public ResponseEntity deleteUser(@PathVariable long id){
         userService.deleteUser(id);
-        return ResponseEntity.status(204).build();
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     @PostMapping("v2/user/")
     public ResponseEntity createUser(@RequestBody User user){
         userService.createUser(user);
-        return ResponseEntity.status(204).build();
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }

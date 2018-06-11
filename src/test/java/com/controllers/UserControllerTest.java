@@ -1,21 +1,20 @@
-package controllers;
+package com.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import entities.User;
-import entities.UserWithLinks;
+import com.entities.User;
+import com.entities.UserWithLinks;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.BDDMockito;
-import org.mockito.stubbing.Answer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import services.UserService;
+import com.services.UserService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -70,18 +69,18 @@ public class UserControllerTest {
 
     @Test
     public void testGetOneUser() throws Exception {
-        BDDMockito.given(userService.getUserWithId(1)).willReturn(userList.get(2));
-        mockMvc.perform(get("/user/1"))
+        BDDMockito.given(userService.getUserWithId(1)).willReturn(userList.get(1));
+        mockMvc.perform(get("/user/{id}", "1"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("application/json;charset=utf-8"))
-                .andExpect(content().string(new ObjectMapper().writeValueAsString(userList.get(2))));
+                .andExpect(content().string(new ObjectMapper().writeValueAsString(userList.get(1))));
     }
 
     @Test
     public void testUpdateUser() throws Exception {
         User user = new User(3, "Petro", "Capitan", false);
         mockMvc.perform(put("/v2/user/").contentType("application/json;charset=utf-8").content(new ObjectMapper().writeValueAsString(user)))
-                .andExpect(status().is(204));
+                .andExpect(status().isNoContent());
     }
 
     @Test
@@ -98,7 +97,7 @@ public class UserControllerTest {
     public void testCrearCache() throws Exception {
         User user = new User(3, "Petro", "Capitan", false);
         mockMvc.perform(put("/user/firstUser").contentType("application/json;charset=utf-8").content(new ObjectMapper().writeValueAsString(user)))
-                .andExpect(status().is(204));
+                .andExpect(status().isNoContent());
     }
 
     @Test
@@ -113,7 +112,7 @@ public class UserControllerTest {
     @Test
     public void testGetUserOrg() throws Exception{
         BDDMockito.given(userService.getUserWithId(1)).willReturn(userList.get(2));
-        mockMvc.perform(get("/user/{value}/org", 1))
+        mockMvc.perform(get("/user/{value}/org", "1"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("application/json;charset=utf-8"))
                 .andExpect(content().string(new ObjectMapper().writeValueAsString(userList.get(2))));
@@ -123,13 +122,13 @@ public class UserControllerTest {
     public void testCreateUser() throws Exception {
         User user = new User(7, "Valera", "Capitan", false);
         mockMvc.perform(post("/v2/user/").contentType("application/json;charset=utf-8").content(new ObjectMapper().writeValueAsString(user)))
-                .andExpect(status().is(204));
+                .andExpect(status().isNoContent());
     }
 
     @Test
     public void testDelete() throws Exception {
         mockMvc.perform(delete("/v2/user/{id}", "1"))
-                .andExpect(status().is(204));
+                .andExpect(status().isNoContent());
     }
 
     @Test
@@ -145,7 +144,4 @@ public class UserControllerTest {
                 .andExpect(content().contentType("application/json;charset=utf-8"))
                 .andExpect(content().string(new ObjectMapper().writeValueAsString(linkedUser)));
     }
-
-
-
 }

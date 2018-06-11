@@ -1,4 +1,4 @@
-package configs.BaseAuth;
+package com.configs.BaseAuth;
 
 /*//uncomment to get authentication
 *//*@Configuration

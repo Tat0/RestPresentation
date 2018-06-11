@@ -1,4 +1,4 @@
-package configs.OAuth2;
+package com.configs.OAuth2;
 
 /*
 public class ServerUser implements UserDetails{

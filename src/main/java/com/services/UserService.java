@@ -1,6 +1,6 @@
-package services;
+package com.services;
 
-import entities.User;
+import com.entities.User;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;

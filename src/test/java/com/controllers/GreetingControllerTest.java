@@ -1,4 +1,4 @@
-package controllers;
+package com.controllers;
 
 import org.junit.runner.RunWith;
 import org.springframework.test.context.junit4.SpringRunner;

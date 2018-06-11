@@ -1,4 +1,4 @@
-package configs.BaseAuth;
+package com.configs.BaseAuth;
 
 /*@Component
 public class AuthenticationEntryPoint extends BasicAuthenticationEntryPoint{
