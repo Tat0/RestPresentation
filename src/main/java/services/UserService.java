@@ -1,6 +1,7 @@
 package services;
 
 import entities.User;
+import exceptions.NoValuesException;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -23,7 +24,10 @@ public class UserService {
         userList.add(new User(counter.incrementAndGet(), "Adam", "Homeless", true));
     }
 
-    public List<User> getAllUsers() {
+    public List<User> getAllUsers() throws NoValuesException {
+        if(userList.size() == 0) {
+            throw new NoValuesException("List is empty");
+        }
         return userList;
     }
 
@@ -40,11 +44,12 @@ public class UserService {
         userList.add((int) user.getUserId(), user);
     }
 
-    public void updateUser(User user) {
+    public User updateUser(User user) {
         User nativeUser = userList.stream().filter(u -> u.getUserId() == user.getUserId()).findFirst().get();
         nativeUser.setUserName(user.getUserName());
         nativeUser.setRole(user.getRole());
         nativeUser.setActive(user.isActive());
+        return nativeUser;
     }
 
     public void deleteUser(long id) {

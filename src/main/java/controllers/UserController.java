@@ -2,6 +2,8 @@ package controllers;
 
 import entities.User;
 import entities.UserWithLinks;
+import exceptions.NoValuesException;
+import org.springframework.http.MediaType;
 import services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
@@ -24,7 +26,7 @@ public class UserController {
     private UserService userService;
 
     @GetMapping("user/all")
-    public List<User> getAllUsers() {
+    public List<User> getAllUsers() throws NoValuesException {
         return userService.getAllUsers();
     }
 
@@ -35,8 +37,8 @@ public class UserController {
 
     @PutMapping("v2/user/")
     public ResponseEntity updateUser(@RequestBody User user){
-        userService.updateUser(user);
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        User updatedUser = userService.updateUser(user);
+        return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON_UTF8).body(updatedUser);
     }
 
     /*
