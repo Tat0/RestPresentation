@@ -11,6 +11,7 @@ import org.mockito.BDDMockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -54,74 +55,69 @@ public class UserControllerTest {
     }
 
     @Test
-    public void testOkResponse() throws Exception {
-        mockMvc.perform(get("/user/all")).andExpect(status().isOk());
-    }
-
-    @Test
-    public void testFindAll() throws Exception {
+    public void findAll() throws Exception {
         BDDMockito.given(userService.getAllUsers()).willReturn(userList);
         mockMvc.perform(get("/user/all"))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType("application/json;charset=utf-8"))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(content().string(new ObjectMapper().writeValueAsString(userList)));
     }
 
     @Test
-    public void testGetOneUser() throws Exception {
+    public void getOneUser() throws Exception {
         BDDMockito.given(userService.getUserWithId(1)).willReturn(userList.get(1));
         mockMvc.perform(get("/user/{id}", "1"))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType("application/json;charset=utf-8"))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(content().string(new ObjectMapper().writeValueAsString(userList.get(1))));
     }
 
     @Test
     public void testUpdateUser() throws Exception {
         User user = new User(3, "Petro", "Capitan", false);
-        mockMvc.perform(put("/v2/user/").contentType("application/json;charset=utf-8").content(new ObjectMapper().writeValueAsString(user)))
+        mockMvc.perform(put("/v2/user/").contentType(MediaType.APPLICATION_JSON_UTF8).content(new ObjectMapper().writeValueAsString(user)))
                 .andExpect(status().isNoContent());
     }
 
     @Test
-    public void testCachedUser() throws Exception {
+    public void cachedUser() throws Exception {
         BDDMockito.given(userService.getUserWithId(1)).willReturn(userList.get(3));
         mockMvc.perform(get("/user/firstUser"))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType("application/json;charset=utf-8"))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(header().string("Cache-Control", "max-age=60"))
                 .andExpect(content().string(new ObjectMapper().writeValueAsString(userList.get(3))));
     }
 
     @Test
-    public void testCrearCache() throws Exception {
+    public void crearCache() throws Exception {
         User user = new User(3, "Petro", "Capitan", false);
-        mockMvc.perform(put("/user/firstUser").contentType("application/json;charset=utf-8").content(new ObjectMapper().writeValueAsString(user)))
+        mockMvc.perform(put("/user/firstUser").contentType(MediaType.APPLICATION_JSON_UTF8).content(new ObjectMapper().writeValueAsString(user)))
                 .andExpect(status().isNoContent());
     }
 
     @Test
-    public void testGetAllUsersV2() throws Exception {
+    public void getAllUsersV2() throws Exception {
         BDDMockito.given(userService.getAllUsersV2()).willReturn(userList);
         mockMvc.perform(get("/v2/user/all"))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType("application/json;charset=utf-8"))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(content().string(new ObjectMapper().writeValueAsString(userList)));
     }
 
     @Test
-    public void testGetUserOrg() throws Exception{
+    public void getUserOrg() throws Exception{
         BDDMockito.given(userService.getUserWithId(1)).willReturn(userList.get(2));
         mockMvc.perform(get("/user/{value}/org", "1"))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType("application/json;charset=utf-8"))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(content().string(new ObjectMapper().writeValueAsString(userList.get(2))));
     }
 
     @Test
-    public void testCreateUser() throws Exception {
+    public void createUser() throws Exception {
         User user = new User(7, "Valera", "Capitan", false);
-        mockMvc.perform(post("/v2/user/").contentType("application/json;charset=utf-8").content(new ObjectMapper().writeValueAsString(user)))
+        mockMvc.perform(post("/v2/user/").contentType(MediaType.APPLICATION_JSON_UTF8).content(new ObjectMapper().writeValueAsString(user)))
                 .andExpect(status().isNoContent());
     }
 
@@ -132,7 +128,7 @@ public class UserControllerTest {
     }
 
     @Test
-    public void testGetUserLinks() throws Exception {
+    public void getUserLinks() throws Exception {
         UserWithLinks linkedUser = new UserWithLinks(userList.get(1));
         linkedUser.add(linkTo(methodOn(UserController.class).getUserLinks(1)).withSelfRel());
         linkedUser.add(linkTo(methodOn(UserController.class).getUserOrg(1)).withRel("Get users organization"));
@@ -141,7 +137,7 @@ public class UserControllerTest {
         BDDMockito.given(userService.getUserWithId(1)).willReturn(userList.get(1));
         mockMvc.perform(get("/v2/user/{value}", "1"))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType("application/json;charset=utf-8"))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(content().string(new ObjectMapper().writeValueAsString(linkedUser)));
     }
 }

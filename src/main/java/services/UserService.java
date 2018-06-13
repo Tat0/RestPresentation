@@ -1,7 +1,6 @@
 package services;
 
 import entities.User;
-import exceptions.NoValuesException;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -14,7 +13,9 @@ import java.util.stream.Collectors;
 public class UserService {
 
     private static List<User> userList = new ArrayList<>();
+
     private static AtomicLong counter = new AtomicLong();
+
     static {
         userList.add(new User(counter.incrementAndGet(), "Vitalii", "Chief", true));
         userList.add(new User(counter.incrementAndGet(), "Volodya", "Chief", true));
@@ -24,10 +25,7 @@ public class UserService {
         userList.add(new User(counter.incrementAndGet(), "Adam", "Homeless", true));
     }
 
-    public List<User> getAllUsers() throws NoValuesException {
-        if(userList.size() == 0) {
-            throw new NoValuesException("List is empty");
-        }
+    public List<User> getAllUsers(){
         return userList;
     }
 

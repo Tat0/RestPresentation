@@ -2,16 +2,15 @@ package controllers;
 
 import entities.User;
 import entities.UserWithLinks;
-import exceptions.NoValuesException;
-import org.springframework.http.MediaType;
-import services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.CacheControl;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import services.UserService;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -25,29 +24,29 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @GetMapping("user/all")
-    public List<User> getAllUsers() throws NoValuesException {
+    @GetMapping(value = "user/all", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public List<User> getAllUsers() {
         return userService.getAllUsers();
     }
 
-    @GetMapping("user/{value}")
+    @GetMapping(value = "user/{value}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public User getUser(@PathVariable long value) {
         return userService.getUserWithId(value);
     }
 
     @PutMapping("v2/user/")
-    public ResponseEntity updateUser(@RequestBody User user){
-        User updatedUser = userService.updateUser(user);
-        return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON_UTF8).body(updatedUser);
+    public ResponseEntity updateUser(@RequestBody User user) {
+        userService.updateUser(user);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     /*
-    * Cache example
-    * =================================================================================
-    * */
-    @GetMapping("user/firstUser")
+     * Cache example
+     * =================================================================================
+     * */
+    @GetMapping(value = "user/firstUser", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @Cacheable(value = "employeeID1")
-    public ResponseEntity getCachedUser(){
+    public ResponseEntity getCachedUser() {
         return ResponseEntity.ok()
                 .cacheControl(CacheControl.maxAge(60, TimeUnit.SECONDS))
                 .body(userService.getUserWithId(1));
@@ -55,7 +54,7 @@ public class UserController {
 
     @PutMapping("user/firstUser")
     @CacheEvict(value = "employeeID1", allEntries = true)
-    public ResponseEntity clearCache(@RequestBody User user){
+    public ResponseEntity clearCache(@RequestBody User user) {
         userService.updateUser(user);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
@@ -65,21 +64,21 @@ public class UserController {
      * =================================================================================
      * */
 
-    @GetMapping("v2/user/all")
-    public List<User> getAllUsersV2 (){
+    @GetMapping(value = "v2/user/all", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public List<User> getAllUsersV2() {
         return userService.getAllUsersV2();
     }
 
     /*
-    * HATEOAS example version 2
-    * */
+     * HATEOAS example version 2
+     * */
 
-    @GetMapping("user/{value}/org")
+    @GetMapping(value = "user/{value}/org", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public User getUserOrg(@PathVariable long value) {
         return userService.getUserWithId(value);
     }
 
-    @GetMapping("v2/user/{value}")
+    @GetMapping(value = "v2/user/{value}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public UserWithLinks getUserLinks(@PathVariable long value) {
         User user = userService.getUserWithId(value);
         UserWithLinks linkedUser = new UserWithLinks(user);
@@ -91,17 +90,17 @@ public class UserController {
     }
 
     /*
-    * Allowed methods
-    * */
+     * Allowed methods
+     * */
 
     @DeleteMapping("v2/user/{id}")
-    public ResponseEntity deleteUser(@PathVariable long id){
+    public ResponseEntity deleteUser(@PathVariable long id) {
         userService.deleteUser(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     @PostMapping("v2/user/")
-    public ResponseEntity createUser(@RequestBody User user){
+    public ResponseEntity createUser(@RequestBody User user) {
         userService.createUser(user);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
