@@ -13,7 +13,9 @@ import java.util.stream.Collectors;
 public class UserService {
 
     private static List<User> userList = new ArrayList<>();
+
     private static AtomicLong counter = new AtomicLong();
+
     static {
         userList.add(new User(counter.incrementAndGet(), "Vitalii", "Chief", true));
         userList.add(new User(counter.incrementAndGet(), "Volodya", "Chief", true));
@@ -23,7 +25,7 @@ public class UserService {
         userList.add(new User(counter.incrementAndGet(), "Adam", "Homeless", true));
     }
 
-    public List<User> getAllUsers() {
+    public List<User> getAllUsers(){
         return userList;
     }
 
@@ -36,10 +38,19 @@ public class UserService {
         return userList.stream().filter(u -> u.getUserId() == id).findFirst().get();
     }
 
-    public void updateUser(User user) {
+    public void createUser(User user) {
+        userList.add((int) user.getUserId(), user);
+    }
+
+    public User updateUser(User user) {
         User nativeUser = userList.stream().filter(u -> u.getUserId() == user.getUserId()).findFirst().get();
         nativeUser.setUserName(user.getUserName());
         nativeUser.setRole(user.getRole());
         nativeUser.setActive(user.isActive());
+        return nativeUser;
+    }
+
+    public void deleteUser(long id) {
+        userList.remove(id);
     }
 }

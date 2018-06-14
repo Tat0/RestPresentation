@@ -1,14 +1,16 @@
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
-import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
+
+import java.util.Arrays;
 
 @SpringBootApplication
 //uncomment to get OAuth2
 //@EnableResourceServer
-@ComponentScan(value = {"controllers", "services", "configs"})
+@ComponentScan(basePackages = {"controllers", "services", "exceptions"})
 public class Application {
-    public static void main(String[] args){
+    public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
     }
 }

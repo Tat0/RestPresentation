@@ -1,12 +1,6 @@
 package configs.OAuth2;
 
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
+/*
 public class ServerUser implements UserDetails{
 
     static final long serialVersionUID = 1L;
@@ -61,4 +55,4 @@ public class ServerUser implements UserDetails{
     public boolean isEnabled() {
         return enabled;
     }
-}
+}*/
