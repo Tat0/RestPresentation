@@ -1,7 +1,6 @@
 package exceptions.advice;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.web.context.request.WebRequest;
 
 public class ExceptionMapper {
     private HttpStatus status;
@@ -11,7 +10,12 @@ public class ExceptionMapper {
     public ExceptionMapper(Exception e, HttpStatus status) {
         this.message = e.getMessage();
         this.status = status;
-        this.systemError = status.value() + ": " + status.getReasonPhrase() + ". Request has failed. Error message: " + e.getMessage();
+        this.systemError = new StringBuilder()
+                .append(status.value())
+                .append(": ")
+                .append(status.getReasonPhrase())
+                .append(". Request has failed. Error message: ")
+                .append(e.getMessage()).toString();
     }
 
     public HttpStatus getStatus() {

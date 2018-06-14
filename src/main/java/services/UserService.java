@@ -1,6 +1,7 @@
 package services;
 
 import entities.User;
+import exceptions.CreationException;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -25,12 +26,12 @@ public class UserService {
         userList.add(new User(counter.incrementAndGet(), "Adam", "Homeless", true));
     }
 
-    public List<User> getAllUsers(){
+    public List<User> getAllUsers() {
         return userList;
     }
 
     public List<User> getAllUsersV2() {
-        return userList.stream().sorted( Comparator.comparing(User::getUserName)).collect(Collectors.toList());
+        return userList.stream().sorted(Comparator.comparing(User::getUserName)).collect(Collectors.toList());
     }
 
 
@@ -38,8 +39,11 @@ public class UserService {
         return userList.stream().filter(u -> u.getUserId() == id).findFirst().get();
     }
 
-    public void createUser(User user) {
-        userList.add((int) user.getUserId(), user);
+    public void createUser(User user) throws CreationException {
+        if(user.getUserId() <= userList.size()) {
+            throw new CreationException("Element with current id alredy exists.");
+        }
+        userList.add(user);
     }
 
     public User updateUser(User user) {
