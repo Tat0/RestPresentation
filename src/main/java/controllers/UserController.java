@@ -52,7 +52,7 @@ public class UserController {
                 .body(userService.getUserWithId(1));
     }
 
-    @PutMapping("user/firstUser")
+    @PutMapping(value = "user/firstUser", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @CacheEvict(value = "employeeID1", allEntries = true)
     public ResponseEntity clearCache(@RequestBody User user) {
         userService.updateUser(user);
@@ -99,7 +99,7 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
-    @PostMapping("v2/user/")
+    @PostMapping(value = "v2/user/", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity createUser(@RequestBody User user) {
         userService.createUser(user);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();

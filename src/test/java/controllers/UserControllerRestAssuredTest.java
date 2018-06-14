@@ -103,10 +103,19 @@ public class UserControllerRestAssuredTest {
         User testUser = userList.get(0);
         testUser.setRole("Developer");
         RestAssured.given()
-                .contentType("application/json")
+                .contentType(MediaType.APPLICATION_JSON_UTF8.toString())
                 .body(new ObjectMapper().writeValueAsString(testUser))
                 .when().put("/v2/user/").then()
                 .statusCode(HttpStatus.NO_CONTENT.value());
+    }
+
+    @Test
+    public void updateUserWithEmptyBody() {
+        RestAssured.given()
+                .contentType(MediaType.APPLICATION_JSON_UTF8.toString())
+                .body("")
+                .when().put("/v2/user/").then()
+                .statusCode(HttpStatus.BAD_REQUEST.value());
     }
 
     @Test
@@ -118,6 +127,25 @@ public class UserControllerRestAssuredTest {
                 .contentType(MediaType.APPLICATION_JSON_UTF8.toString())
                 .header("Cache-Control", "max-age=60");
         assertEquals(new ObjectMapper().writeValueAsString(userList.get(1)), response.getBody().asString());
+    }
+
+    @Test
+    public void clearCache() throws Exception {
+        User testUser = userList.get(0);
+        RestAssured.given()
+                .contentType(MediaType.APPLICATION_JSON_UTF8.toString())
+                .body(new ObjectMapper().writeValueAsString(testUser))
+                .when().put("user/firstUser").then()
+                .statusCode(HttpStatus.NO_CONTENT.value());
+    }
+
+    @Test
+    public void clearCacheWithEmptyBody() {
+        RestAssured.given()
+                .contentType(MediaType.APPLICATION_JSON_UTF8.toString())
+                .body("")
+                .when().put("user/firstUser").then()
+                .statusCode(HttpStatus.BAD_REQUEST.value());
     }
 
     @Test
@@ -141,7 +169,7 @@ public class UserControllerRestAssuredTest {
     }
 
     @Test
-    public void getUserLinks() throws JsonProcessingException {
+    public void getUserLinks() throws Exception {
         UserWithLinks linkedUser = new UserWithLinks(userList.get(1));
         linkedUser.add(linkTo(methodOn(UserController.class).getUserLinks(1)).withSelfRel());
         linkedUser.add(linkTo(methodOn(UserController.class).getUserOrg(1)).withRel("Get users organization"));
@@ -170,5 +198,14 @@ public class UserControllerRestAssuredTest {
         Response response = request.post("/v2/user/");
         response.then()
                 .statusCode(HttpStatus.NO_CONTENT.value());
+    }
+
+    @Test
+    public void createUserWithEmptyBody() {
+        RestAssured.given()
+                .contentType(MediaType.APPLICATION_JSON_UTF8.toString())
+                .body("")
+                .when().post("/v2/user/").then()
+                .statusCode(HttpStatus.BAD_REQUEST.value());
     }
 }
