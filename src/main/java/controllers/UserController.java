@@ -2,6 +2,7 @@ package controllers;
 
 import entities.User;
 import entities.UserWithLinks;
+import exceptions.CreationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -37,6 +38,7 @@ public class UserController {
     @PutMapping("v2/user/")
     public ResponseEntity updateUser(@RequestBody User user) {
         userService.updateUser(user);
+        System.out.println(user);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
@@ -100,7 +102,7 @@ public class UserController {
     }
 
     @PostMapping(value = "v2/user/", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity createUser(@RequestBody User user) {
+    public ResponseEntity createUser(@RequestBody User user) throws CreationException {
         userService.createUser(user);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
