@@ -1,23 +1,23 @@
 package services;
 
 import entities.User;
-import exceptions.CreationException;
+import exceptions.RestException;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
 @Service
 public class UserService {
 
-    private static List<User> userList = new ArrayList<>();
+    private static List<User> userList;
 
     private static AtomicLong counter = new AtomicLong();
 
     static {
+        userList = new ArrayList<>();
         userList.add(new User(counter.incrementAndGet(), "Vitalii", "Chief", true));
         userList.add(new User(counter.incrementAndGet(), "Volodya", "Chief", true));
         userList.add(new User(counter.incrementAndGet(), "Petro", "Developer", false));
@@ -39,9 +39,9 @@ public class UserService {
         return userList.stream().filter(u -> u.getUserId() == id).findFirst().get();
     }
 
-    public void createUser(User user) throws CreationException {
-        if(user.getUserId() <= userList.size()) {
-            throw new CreationException("Element with current id alredy exists.");
+    public void createUser(User user) {
+        if(userList.stream().anyMatch(u -> u.getUserId() == user.getUserId())) {
+            throw new RestException(HttpStatus.BAD_REQUEST, "User with current id alredy exists.");
         }
         userList.add(user);
     }

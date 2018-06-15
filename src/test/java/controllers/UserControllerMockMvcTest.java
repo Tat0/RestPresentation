@@ -3,18 +3,18 @@ package controllers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import entities.User;
 import entities.UserWithLinks;
+import org.junit.After;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.BDDMockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import services.UserService;
 
 import java.util.ArrayList;
@@ -26,32 +26,31 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = UserControllerUnitTestConfig.class)
-public class UserControllerTest {
+@WebMvcTest(UserController.class)
+@ContextConfiguration(classes = UserControllerUnitTestConfig.class)
+public class UserControllerMockMvcTest {
 
     @MockBean
     private UserService userService;
 
     @Autowired
-    private UserController userController;
-
     private MockMvc mockMvc;
-
-    @Before
-    public void setUp() {
-        mockMvc = MockMvcBuilders.standaloneSetup(userController).build();
-    }
 
     private static List<User> userList = new ArrayList<>();
 
-    @BeforeClass
-    public static void setUpClass() {
+    @Before
+    public void setUp() {
         userList.add(new User(1, "Vitalii", "Chief", true));
         userList.add(new User(2, "Volodya", "Chief", true));
         userList.add(new User(3, "Petro", "Developer", false));
         userList.add(new User(4, "Oleg", "Manager", false));
         userList.add(new User(5, "Nazar", "Homeless", true));
         userList.add(new User(6, "Adam", "Homeless", true));
+    }
+
+    @After
+    public void shutDown() {
+        userList = new ArrayList<>();
     }
 
     @Test
@@ -131,13 +130,12 @@ public class UserControllerTest {
     public void getUserLinks() throws Exception {
         UserWithLinks linkedUser = new UserWithLinks(userList.get(1));
         linkedUser.add(linkTo(methodOn(UserController.class).getUserLinks(1)).withSelfRel());
-        linkedUser.add(linkTo(methodOn(UserController.class).getUserOrg(1)).withRel("Get users organization"));
-        linkedUser.add(linkTo(methodOn(UserController.class).updateUser(null)).withRel("Update with PUT method"));
-        linkedUser.add(linkTo(methodOn(UserController.class).updateUser(null)).withRel("Delete with DELETE method"));
+        linkedUser.add(linkTo(methodOn(UserController.class).getUserOrganisation(1)).withRel("Get_users_organization"));
+        linkedUser.add(linkTo(methodOn(UserController.class).updateUser(null)).withRel("Update_with_PUT_method"));
+        linkedUser.add(linkTo(methodOn(UserController.class).updateUser(null)).withRel("Delete_with_DELETE_method"));
         BDDMockito.given(userService.getUserWithId(1)).willReturn(userList.get(1));
         mockMvc.perform(get("/v2/user/{value}", "1"))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
-                .andExpect(content().string(new ObjectMapper().writeValueAsString(linkedUser)));
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8));
     }
 }
