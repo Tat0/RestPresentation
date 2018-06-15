@@ -1,0 +1,116 @@
+{
+  "$id": "http://example.com/example.json",
+  "type": "object",
+  "definitions": {},
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "properties": {
+    "user": {
+      "$id": "/properties/user",
+      "type": "object",
+      "properties": {
+        "userName": {
+          "$id": "/properties/user/properties/userName",
+          "type": "string",
+          "title": "The Username Schema ",
+          "default": "",
+          "examples": [
+            "Volodya"
+          ]
+        },
+        "role": {
+          "$id": "/properties/user/properties/role",
+          "type": "string",
+          "title": "The Role Schema ",
+          "default": "",
+          "examples": [
+            "Chief"
+          ]
+        },
+        "active": {
+          "$id": "/properties/user/properties/active",
+          "type": "boolean",
+          "title": "The Active Schema ",
+          "default": false,
+          "examples": [
+            true
+          ]
+        },
+        "id": {
+          "$id": "/properties/user/properties/id",
+          "type": "integer",
+          "title": "The Id Schema ",
+          "default": 0,
+          "examples": [
+            2
+          ]
+        }
+      }
+    },
+    "_links": {
+      "$id": "/properties/_links",
+      "type": "object",
+      "properties": {
+        "self": {
+          "$id": "/properties/_links/properties/self",
+          "type": "object",
+          "properties": {
+            "href": {
+              "$id": "/properties/_links/properties/self/properties/href",
+              "type": "string",
+              "title": "The Href Schema ",
+              "default": "",
+              "examples": [
+                "http://localhost:8080/v2/user/1"
+              ]
+            }
+          }
+        },
+        "Get users organization": {
+          "$id": "/properties/_links/properties/Get users organization",
+          "type": "object",
+          "properties": {
+            "href": {
+              "$id": "/properties/_links/properties/Get users organization/properties/href",
+              "type": "string",
+              "title": "The Href Schema ",
+              "default": "",
+              "examples": [
+                "http://localhost:8080/user/1/org"
+              ]
+            }
+          }
+        },
+        "Update with PUT method": {
+          "$id": "/properties/_links/properties/Update with PUT method",
+          "type": "object",
+          "properties": {
+            "href": {
+              "$id": "/properties/_links/properties/Update with PUT method/properties/href",
+              "type": "string",
+              "title": "The Href Schema ",
+              "default": "",
+              "examples": [
+                "http://localhost:8080/v2/user/"
+              ]
+            }
+          }
+        },
+        "Delete with DELETE method": {
+          "$id": "/properties/_links/properties/Delete with DELETE method",
+          "type": "object",
+          "properties": {
+            "href": {
+              "$id": "/properties/_links/properties/Delete with DELETE method/properties/href",
+              "type": "string",
+              "title": "The Href Schema ",
+              "default": "",
+              "examples": [
+                "http://localhost:8080/v2/user/"
+              ]
+            }
+          }
+        }
+      }
+    }
+  }
+}

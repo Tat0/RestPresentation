@@ -2,7 +2,6 @@ package controllers;
 
 import entities.User;
 import entities.UserWithLinks;
-import exceptions.CreationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -14,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import services.UserService;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.concurrent.TimeUnit;
 
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
@@ -38,7 +38,6 @@ public class UserController {
     @PutMapping("v2/user/")
     public ResponseEntity updateUser(@RequestBody User user) {
         userService.updateUser(user);
-        System.out.println(user);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
@@ -85,9 +84,9 @@ public class UserController {
         User user = userService.getUserWithId(value);
         UserWithLinks linkedUser = new UserWithLinks(user);
         linkedUser.add(linkTo(methodOn(UserController.class).getUserLinks(value)).withSelfRel());
-        linkedUser.add(linkTo(methodOn(UserController.class).getUserOrg(value)).withRel("Get users organization"));
-        linkedUser.add(linkTo(methodOn(UserController.class).updateUser(null)).withRel("Update with PUT method"));
-        linkedUser.add(linkTo(methodOn(UserController.class).updateUser(null)).withRel("Delete with DELETE method"));
+        linkedUser.add(linkTo(methodOn(UserController.class).getUserOrg(value)).withRel("Get_users_organization"));
+        linkedUser.add(linkTo(methodOn(UserController.class).updateUser(null)).withRel("Update_with_PUT_method"));
+        linkedUser.add(linkTo(methodOn(UserController.class).updateUser(null)).withRel("Delete_with_DELETE_method"));
         return linkedUser;
     }
 
@@ -97,12 +96,16 @@ public class UserController {
 
     @DeleteMapping("v2/user/{id}")
     public ResponseEntity deleteUser(@PathVariable long id) {
-        userService.deleteUser(id);
+        try{
+            userService.deleteUser(id);
+        } catch (NoSuchElementException e) {
+            //NOOP
+        }
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     @PostMapping(value = "v2/user/", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity createUser(@RequestBody User user) throws CreationException {
+    public ResponseEntity createUser(@RequestBody User user) {
         userService.createUser(user);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }

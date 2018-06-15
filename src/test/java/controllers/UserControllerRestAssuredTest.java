@@ -3,7 +3,7 @@ package controllers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import entities.User;
 import entities.UserWithLinks;
-import exceptions.CreationException;
+import exceptions.RestException;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import org.junit.After;
@@ -93,10 +93,12 @@ public class UserControllerRestAssuredTest {
     public void getNonExistentUser() {
         BDDMockito.given(userService.getUserWithId(1)).willThrow(new NoSuchElementException("No value present"));
         RestAssured.when().get("/user/{id}", "1").then()
-                .statusCode(HttpStatus.INTERNAL_SERVER_ERROR.value())
                 .contentType(MediaType.APPLICATION_JSON_UTF8.toString())
-                .body("status", equalTo("INTERNAL_SERVER_ERROR"))
-                .body("message", equalTo("No value present"));
+                .statusCode(HttpStatus.NOT_FOUND.value())
+                .body("status", equalTo("NOT_FOUND"))
+                .body("message", equalTo("No value present"))
+                .body("error", equalTo("404: Not Found. System error: No value present"))
+                .assertThat().body(matchesJsonSchemaInClasspath("validation/exception-validator.json"));
     }
 
     @Test
@@ -118,10 +120,10 @@ public class UserControllerRestAssuredTest {
                 .contentType(MediaType.APPLICATION_JSON_UTF8.toString())
                 .body(new ObjectMapper().writeValueAsString(user))
                 .when().put("/v2/user/").then()
-                .statusCode(HttpStatus.INTERNAL_SERVER_ERROR.value())
-                .body("status", equalTo("INTERNAL_SERVER_ERROR"))
+                .statusCode(HttpStatus.NOT_FOUND.value())
+                .body("status", equalTo("NOT_FOUND"))
                 .body("message", equalTo("No value present"))
-                .body("systemError", equalTo("500: Internal Server Error. Request has failed. Error message: No value present"))
+                .body("error", equalTo("404: Not Found. System error: No value present"))
                 .assertThat().body(matchesJsonSchemaInClasspath("validation/exception-validator.json"));
     }
 
@@ -205,19 +207,47 @@ public class UserControllerRestAssuredTest {
     }
 
     @Test
-    public void getUserLinks() throws Exception {
+    public void getUserLinks() {
         UserWithLinks linkedUser = new UserWithLinks(userList.get(1));
         linkedUser.add(linkTo(methodOn(UserController.class).getUserLinks(1)).withSelfRel());
-        linkedUser.add(linkTo(methodOn(UserController.class).getUserOrg(1)).withRel("Get users organization"));
-        linkedUser.add(linkTo(methodOn(UserController.class).updateUser(null)).withRel("Update with PUT method"));
-        linkedUser.add(linkTo(methodOn(UserController.class).updateUser(null)).withRel("Delete with DELETE method"));
+        linkedUser.add(linkTo(methodOn(UserController.class).getUserOrg(1)).withRel("Get_users_organization"));
+        linkedUser.add(linkTo(methodOn(UserController.class).updateUser(null)).withRel("Update_with_PUT_method"));
+        linkedUser.add(linkTo(methodOn(UserController.class).updateUser(null)).withRel("Delete_with_DELETE_method"));
         BDDMockito.given(userService.getUserWithId(1)).willReturn(userList.get(1));
         Response response = get("/v2/user/{value}", 1);
         response.then()
                 .statusCode(HttpStatus.OK.value())
-                .contentType(MediaType.APPLICATION_JSON_UTF8.toString());
-        assertEquals(new ObjectMapper().writeValueAsString(linkedUser), response.getBody().asString());
+                .contentType(MediaType.APPLICATION_JSON_UTF8.toString())
+                .body("user.userName", equalTo("Volodya"))
+                .body("user.role", equalTo("Chief"))
+                .body("user.active", equalTo(true))
+                .body("user.id", equalTo(2))
+                .body("_links.self.href", endsWith("/v2/user/1"))
+                .body("_links.Get_users_organization.href", endsWith("/user/1/org"))
+                .body("_links.Update_with_PUT_method.href", endsWith("/v2/user/"))
+                .body("_links.Delete_with_DELETE_method.href", endsWith("/v2/user/"))
+                .assertThat().body(matchesJsonSchemaInClasspath("validation/user-links-validator.json"));
     }
+
+    @Test
+    public void getUserLinksNonExistentUser() {
+        BDDMockito.given(userService.getUserWithId(7)).willThrow(new NoSuchElementException("No value present"));
+        get("/v2/user/{value}", 7).then()
+                .statusCode(HttpStatus.NOT_FOUND.value())
+                .contentType(MediaType.APPLICATION_JSON_UTF8.toString())
+                .body("status", equalTo("NOT_FOUND"))
+                .body("message", equalTo("No value present"))
+                .body("error", equalTo("404: Not Found. System error: No value present"))
+                .assertThat().body(matchesJsonSchemaInClasspath("validation/exception-validator.json"));
+    }
+
+    @Test
+    public void getUserLinksIncorrectValue() {
+        get("/v2/user/{value}", "abc").then()
+                .statusCode(HttpStatus.BAD_REQUEST.value());
+    }
+
+
 
     @Test
     public void deleteUser() {
@@ -230,11 +260,7 @@ public class UserControllerRestAssuredTest {
     public void deleteNonExistentUser() {
         BDDMockito.doThrow(new NoSuchElementException("No value present")).when(userService).deleteUser(7);
         RestAssured.delete("/v2/user/{id}", 7).then()
-                .statusCode(HttpStatus.INTERNAL_SERVER_ERROR.value())
-                .body("status", equalTo("INTERNAL_SERVER_ERROR"))
-                .body("message", equalTo("No value present"))
-                .body("systemError", equalTo("500: Internal Server Error. Request has failed. Error message: No value present"))
-                .assertThat().body(matchesJsonSchemaInClasspath("validation/exception-validator.json"));
+                .statusCode(HttpStatus.NO_CONTENT.value());
     }
 
     @Test
@@ -269,15 +295,15 @@ public class UserControllerRestAssuredTest {
     @Test
     public void createUserWithAlredyExistentId() throws Exception {
         User user = new User(6, "Ostap", "Developer", true);
-        BDDMockito.doThrow(new CreationException("Element with current id alredy exists.")).when(userService).createUser(user);
+        BDDMockito.doThrow(new RestException(HttpStatus.BAD_REQUEST, "User with current id alredy exists.")).when(userService).createUser(user);
         RestAssured.given()
                 .contentType(MediaType.APPLICATION_JSON_UTF8.toString())
                 .body(new ObjectMapper().writeValueAsString(user))
                 .when().post("/v2/user/").then()
-                .statusCode(HttpStatus.INTERNAL_SERVER_ERROR.value())
-                .body("status", equalTo("INTERNAL_SERVER_ERROR"))
-                .body("message", equalTo("Element with current id alredy exists."))
-                .body("systemError", equalTo("500: Internal Server Error. Request has failed. Error message: Element with current id alredy exists."))
+                .statusCode(HttpStatus.BAD_REQUEST.value())
+                .body("status", equalTo("BAD_REQUEST"))
+                .body("message", equalTo("User with current id alredy exists."))
+                .body("error", equalTo("400: Bad Request. System error: User with current id alredy exists."))
                 .assertThat().body(matchesJsonSchemaInClasspath("validation/exception-validator.json"));
     }
 

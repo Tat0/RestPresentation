@@ -13,6 +13,11 @@ public class UserControllerUnitTestConfig {
     }
 
     @Bean
+    public GreetingController greetingController() {
+        return new GreetingController();
+    }
+
+    @Bean
     public UserService userService() {
         return new UserService();
     }
@@ -21,4 +26,6 @@ public class UserControllerUnitTestConfig {
     public ControllerExceptionHandler controllerExceptionHandler() {
         return new ControllerExceptionHandler();
     }
+
+
 }

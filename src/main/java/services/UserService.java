@@ -1,7 +1,8 @@
 package services;
 
 import entities.User;
-import exceptions.CreationException;
+import exceptions.RestException;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -39,9 +40,9 @@ public class UserService {
         return userList.stream().filter(u -> u.getUserId() == id).findFirst().get();
     }
 
-    public void createUser(User user) throws CreationException {
-        if(user.getUserId() <= userList.size()) {
-            throw new CreationException("Element with current id alredy exists.");
+    public void createUser(User user) {
+        if(userList.stream().anyMatch(u -> u.getUserId() == user.getUserId())) {
+            throw new RestException(HttpStatus.BAD_REQUEST, "User with current id alredy exists.");
         }
         userList.add(user);
     }
