@@ -131,9 +131,9 @@ public class UserControllerTest {
     public void getUserLinks() throws Exception {
         UserWithLinks linkedUser = new UserWithLinks(userList.get(1));
         linkedUser.add(linkTo(methodOn(UserController.class).getUserLinks(1)).withSelfRel());
-        linkedUser.add(linkTo(methodOn(UserController.class).getUserOrg(1)).withRel("Get users organization"));
-        linkedUser.add(linkTo(methodOn(UserController.class).updateUser(null)).withRel("Update with PUT method"));
-        linkedUser.add(linkTo(methodOn(UserController.class).updateUser(null)).withRel("Delete with DELETE method"));
+        linkedUser.add(linkTo(methodOn(UserController.class).getUserOrganisation(1)).withRel("Get_users_organization"));
+        linkedUser.add(linkTo(methodOn(UserController.class).updateUser(null)).withRel("Update_with_PUT_method"));
+        linkedUser.add(linkTo(methodOn(UserController.class).updateUser(null)).withRel("Delete_with_DELETE_method"));
         BDDMockito.given(userService.getUserWithId(1)).willReturn(userList.get(1));
         mockMvc.perform(get("/v2/user/{value}", "1"))
                 .andExpect(status().isOk())

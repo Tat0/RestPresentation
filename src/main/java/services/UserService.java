@@ -5,20 +5,19 @@ import exceptions.RestException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
 @Service
 public class UserService {
 
-    private static List<User> userList = new ArrayList<>();
+    private static List<User> userList;
 
     private static AtomicLong counter = new AtomicLong();
 
     static {
+        userList = new ArrayList<>();
         userList.add(new User(counter.incrementAndGet(), "Vitalii", "Chief", true));
         userList.add(new User(counter.incrementAndGet(), "Volodya", "Chief", true));
         userList.add(new User(counter.incrementAndGet(), "Petro", "Developer", false));
@@ -56,6 +55,10 @@ public class UserService {
     }
 
     public void deleteUser(long id) {
-        userList.remove(id);
+        try {
+            userList.remove(id);
+        } catch (NoSuchElementException e) {
+            //NOOP
+        }
     }
 }
