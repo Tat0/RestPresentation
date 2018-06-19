@@ -55,10 +55,6 @@ public class UserService {
     }
 
     public void deleteUser(long id) {
-        try {
-            userList.remove(id);
-        } catch (NoSuchElementException e) {
-            //NOOP
-        }
+        userList.remove(id);
     }
 }
