@@ -1,12 +1,14 @@
-package controllers;
+package config_v2;
 
+import controllers.GreetingController;
+import controllers.UserController;
 import exceptions.advice.ControllerExceptionHandler;
-import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import services.UserService;
 
-@TestConfiguration
-public class UserControllerUnitTestConfig {
+@Configuration
+public class UserControllerRestAssuredConfigV2 {
     @Bean
     public UserController userController() {
         return new UserController();
@@ -26,6 +28,4 @@ public class UserControllerUnitTestConfig {
     public ControllerExceptionHandler controllerExceptionHandler() {
         return new ControllerExceptionHandler();
     }
-
-
 }

@@ -1,5 +1,6 @@
 package exceptions.advice;
 
+import exceptions.RestException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,8 +14,14 @@ import java.util.NoSuchElementException;
 public class ControllerExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler({NoSuchElementException.class})
-    protected ResponseEntity<Object> handleNoSuchElementInternalError(Exception e) {
-        ExceptionMapper exceptionMapper = new ExceptionMapper(e, HttpStatus.INTERNAL_SERVER_ERROR);
-        return new ResponseEntity<>(exceptionMapper, new HttpHeaders(), exceptionMapper.getStatus());
+    protected ResponseEntity<Object> handleNoSuchElementInternalError(NoSuchElementException e) {
+        RestException response = new RestException(HttpStatus.NOT_FOUND, e.getMessage());
+        return new ResponseEntity<>(response, new HttpHeaders(), response.getStatus());
+    }
+
+    @ExceptionHandler({RestException.class})
+    protected ResponseEntity<Object> handleException(RestException e) {
+        RestException response = new RestException(e);
+        return new ResponseEntity<>(response, new HttpHeaders(), response.getStatus());
     }
 }
