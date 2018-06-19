@@ -30,14 +30,11 @@ public class UserController {
         return userService.getAllUsers();
     }
 
-    //TODO Test Null Pointer
-    //TODO Value is incorrect
     @GetMapping(value = "user/{value}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public User getUser(@PathVariable long value) {
         return userService.getUserWithId(value);
     }
 
-    //TODO Test Null Pointer
     @PutMapping("v2/user/")
     public ResponseEntity updateUser(@RequestBody User user) {
         userService.updateUser(user);
@@ -49,7 +46,6 @@ public class UserController {
      * =================================================================================
      * */
 
-    //TODO Test Null Pointer
     @GetMapping(value = "user/firstUser", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @Cacheable(value = "employeeID1")
     public ResponseEntity getCachedUser() {
@@ -58,7 +54,6 @@ public class UserController {
                 .body(userService.getUserWithId(1));
     }
 
-    //TODO Test Null Pointer
     @PutMapping(value = "user/firstUser", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @CacheEvict(value = "employeeID1", allEntries = true)
     public ResponseEntity clearCache(@RequestBody User user) {
@@ -71,7 +66,6 @@ public class UserController {
      * =================================================================================
      * */
 
-    //TODO Test null pointer
     @GetMapping(value = "v2/user/all", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public List<User> getAllUsersV2() {
         return userService.getAllUsersV2();
@@ -81,15 +75,11 @@ public class UserController {
      * HATEOAS example version 2
      * */
 
-    //TODO Test null pointer
-    //TODO Value is incorrect
     @GetMapping(value = "user/{value}/org", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public User getUserOrganisation(@PathVariable long value) {
         return userService.getUserWithId(value);
     }
 
-    //TODO Test null pointer
-    //TODO Value is incorrect
     @GetMapping(value = "v2/user/{value}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public UserWithLinks getUserLinks(@PathVariable long value) {
         User user = userService.getUserWithId(value);
@@ -105,15 +95,12 @@ public class UserController {
      * Allowed methods
      * */
 
-    //TODO Test null pointer
-    //TODO Value is incorrect
     @DeleteMapping("v2/user/{id}")
     public ResponseEntity deleteUser(@PathVariable long id) {
         userService.deleteUser(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
-    //TODO Test null pointer
     @PostMapping(value = "v2/user/", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity createUser(@RequestBody User user) {
         userService.createUser(user);

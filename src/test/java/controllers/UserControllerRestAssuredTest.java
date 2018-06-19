@@ -22,7 +22,6 @@ import services.UserService;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 import static io.restassured.RestAssured.get;
 import static io.restassured.module.jsv.JsonSchemaValidator.matchesJsonSchemaInClasspath;
@@ -93,40 +92,34 @@ public class UserControllerRestAssuredTest {
 
     @Test
     public void checkGettingUser() throws Exception {
-        BDDMockito.given(userService.getUserWithId(1)).willReturn(userList.get(0));
-        RestAssured.when().get("/user/{id}", "1").then()
+        BDDMockito.given(userService.getUserWithId(1L)).willReturn(userList.get(0));
+        Response response = get("/user/{id}", 1);
+        response.then()
                 .statusCode(HttpStatus.OK.value())
                 .contentType(MediaType.APPLICATION_JSON_UTF8.toString())
                 .body("userName", equalTo("Vitalii"))
                 .body("role", equalTo("Chief"))
                 .body("active", equalTo(true))
-                .body("id", equalTo(1));
-        String string = get("/user/{id}", "1").asString();
-        assertEquals(new ObjectMapper().writeValueAsString(userList.get(0)), string);
-    }
-
-    @Test
-    public void checkGettingUserWhenDatabaseFail() {
-        BDDMockito.given(userService.getUserWithId(1)).willThrow(new RestException(HttpStatus.INTERNAL_SERVER_ERROR, "Connection refused"));
-        RestAssured.when().get("/user/{id}", "1").then()
-                .contentType(MediaType.APPLICATION_JSON_UTF8.toString())
-                .statusCode(HttpStatus.INTERNAL_SERVER_ERROR.value())
-                .body("status", equalTo("INTERNAL_SERVER_ERROR"))
-                .body("message", equalTo("Connection refused"))
-                .body("error", equalTo("500: Internal Server Error. System error: Connection refused"))
-                .assertThat().body(matchesJsonSchemaInClasspath("validation/exception-validator.json"));
+                .body("id", equalTo(1))
+                .assertThat().body(matchesJsonSchemaInClasspath("validation/user-validator.json"));
     }
 
     @Test
     public void checkGettingUserWhenItNotExist() {
-        BDDMockito.given(userService.getUserWithId(1)).willThrow(new NoSuchElementException("No value present"));
-        RestAssured.when().get("/user/{id}", "1").then()
+        BDDMockito.given(userService.getUserWithId(7L)).willThrow(new RestException(HttpStatus.NOT_FOUND, "No value present"));
+        RestAssured.when().get("/user/{id}", 7).then()
                 .contentType(MediaType.APPLICATION_JSON_UTF8.toString())
                 .statusCode(HttpStatus.NOT_FOUND.value())
                 .body("status", equalTo("NOT_FOUND"))
                 .body("message", equalTo("No value present"))
                 .body("error", equalTo("404: Not Found. System error: No value present"))
                 .assertThat().body(matchesJsonSchemaInClasspath("validation/exception-validator.json"));
+    }
+
+    @Test
+    public void checkUpdatingUserWhenMethodArgumentWasChanged() {
+        RestAssured.when().get("/user/{id}", Long.MAX_VALUE).then()
+                .statusCode(HttpStatus.OK.value());
     }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -143,9 +136,9 @@ public class UserControllerRestAssuredTest {
     }
 
     @Test
-    public void checkUpdatingUserWhenItNotExist() throws Exception {
-        User user = new User(7, "Ostap", "Developer", true);
-        BDDMockito.given(userService.updateUser(user)).willThrow(new NoSuchElementException("No value present"));
+    public void checkUpdatingUserWhenItNotExist() {
+        User user = new User(7L, "Ostap", "Developer", true);
+        BDDMockito.given(userService.updateUser(user)).willThrow(new RestException(HttpStatus.NOT_FOUND, "No value present"));
         RestAssured.given()
                 .contentType(MediaType.APPLICATION_JSON_UTF8.toString())
                 .body(user)
@@ -180,7 +173,7 @@ public class UserControllerRestAssuredTest {
 
     @Test
     public void checkGettingCachedUser() throws Exception {
-        BDDMockito.given(userService.getUserWithId(1)).willReturn(userList.get(1));
+        BDDMockito.given(userService.getUserWithId(1L)).willReturn(userList.get(1));
         Response response = get("/user/firstUser");
         response.then()
                 .statusCode(HttpStatus.OK.value())
@@ -188,6 +181,8 @@ public class UserControllerRestAssuredTest {
                 .header("Cache-Control", "max-age=60");
         assertEquals(new ObjectMapper().writeValueAsString(userList.get(1)), response.getBody().asString());
     }
+
+//----------------------------------------------------------------------------------------------------------------------
 
     @Test
     public void checkClearingCache() {
@@ -234,7 +229,7 @@ public class UserControllerRestAssuredTest {
 
     @Test
     public void checkGettingUserOrganisation() throws Exception {
-        BDDMockito.given(userService.getUserWithId(1)).willReturn(userList.get(0));
+        BDDMockito.given(userService.getUserWithId(1L)).willReturn(userList.get(0));
         Response response = get("/user/{value}/org", 1);
         response.then()
                 .statusCode(HttpStatus.OK.value())
@@ -269,7 +264,7 @@ public class UserControllerRestAssuredTest {
 
     @Test
     public void checkGettingUsersLinksWhenItNotExist() {
-        BDDMockito.given(userService.getUserWithId(7)).willThrow(new NoSuchElementException("No value present"));
+        BDDMockito.given(userService.getUserWithId(7L)).willThrow(new RestException(HttpStatus.NOT_FOUND, "No value present"));
         get("/v2/user/{value}", 7).then()
                 .statusCode(HttpStatus.NOT_FOUND.value())
                 .contentType(MediaType.APPLICATION_JSON_UTF8.toString())
@@ -297,7 +292,7 @@ public class UserControllerRestAssuredTest {
 
     @Test
     public void checkDeletingUserWhenItNotExist() {
-        BDDMockito.doThrow(new NoSuchElementException("No value present")).when(userService).deleteUser(7);
+        BDDMockito.doThrow(new RestException(HttpStatus.NOT_FOUND, "No value present")).when(userService).deleteUser(7L);
         RestAssured.delete("/v2/user/{id}", 7).then()
                 .statusCode(HttpStatus.NO_CONTENT.value());
     }
@@ -306,7 +301,7 @@ public class UserControllerRestAssuredTest {
 
     @Test
     public void checkCreatingUser() throws Exception {
-        User user = new User(7, "Ostap", "Developer", true);
+        User user = new User(7L, "Ostap", "Developer", true);
         RestAssured.given()
                 .contentType(MediaType.APPLICATION_JSON_UTF8.toString())
                 .body(user)
@@ -325,7 +320,7 @@ public class UserControllerRestAssuredTest {
 
     @Test
     public void checkCreatingUserWhenContentTypeHeaderIsWrong() throws Exception {
-        User user = new User(7, "Ostap", "Developer", true);
+        User user = new User(7L, "Ostap", "Developer", true);
         RestAssured.given()
                 .contentType(MediaType.TEXT_PLAIN.toString())
                 .body(new ObjectMapper().writeValueAsString(user))
@@ -335,7 +330,7 @@ public class UserControllerRestAssuredTest {
 
     @Test
     public void checkCreatingUserWhenIdAlredyExist() throws Exception {
-        User user = new User(6, "Ostap", "Developer", true);
+        User user = new User(6L, "Ostap", "Developer", true);
         BDDMockito.doThrow(new RestException(HttpStatus.BAD_REQUEST, "User with current id alredy exists."))
                 .when(userService).createUser(user);
         RestAssured.given()
@@ -353,8 +348,8 @@ public class UserControllerRestAssuredTest {
 
     @Test
     public void userSchemaValidation() {
-        BDDMockito.given(userService.getUserWithId(1)).willReturn(userList.get(0));
-        get("/user/{id}", "1").then()
+        BDDMockito.given(userService.getUserWithId(1L)).willReturn(userList.get(0));
+        get("/user/{id}", 1).then()
                 .assertThat().body(matchesJsonSchemaInClasspath("validation/user-validator.json"));
     }
 

@@ -14,14 +14,14 @@ import java.util.NoSuchElementException;
 public class ControllerExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler({NoSuchElementException.class})
-    protected ResponseEntity<Object> handleNoSuchElementInternalError(Exception e) {
-        ExceptionResponse response = new ExceptionResponse(HttpStatus.NOT_FOUND, e.getMessage());
+    protected ResponseEntity<Object> handleNoSuchElementInternalError(NoSuchElementException e) {
+        RestException response = new RestException(HttpStatus.NOT_FOUND, e.getMessage());
         return new ResponseEntity<>(response, new HttpHeaders(), response.getStatus());
     }
 
     @ExceptionHandler({RestException.class})
     protected ResponseEntity<Object> handleException(RestException e) {
-        ExceptionResponse response = new ExceptionResponse(e);
+        RestException response = new RestException(e);
         return new ResponseEntity<>(response, new HttpHeaders(), response.getStatus());
     }
 }
