@@ -1,0 +1,38 @@
+[
+  {
+    "userName": "Vitalii",
+    "role": "Chief",
+    "active": true,
+    "id": 1
+  },
+  {
+    "userName": "Volodya",
+    "role": "Chief",
+    "active": true,
+    "id": 2
+  },
+  {
+    "userName": "Petro",
+    "role": "Developer",
+    "active": false,
+    "id": 3
+  },
+  {
+    "userName": "Oleg",
+    "role": "Manager",
+    "active": false,
+    "id": 4
+  },
+  {
+    "userName": "Nazar",
+    "role": "Developer",
+    "active": true,
+    "id": 5
+  },
+  {
+    "userName": "Adam",
+    "role": "Human",
+    "active": true,
+    "id": 6
+  }
+]

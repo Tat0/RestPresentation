@@ -26,7 +26,7 @@ public class UserController {
     private UserService userService;
 
     @GetMapping(value = "user/all", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public List<User> getAllUsers() throws SQLException {
+    public List<User> getAllUsers() {
         return userService.getAllUsers();
     }
 

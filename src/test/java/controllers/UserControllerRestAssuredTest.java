@@ -17,6 +17,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import services.UserService;
 
@@ -32,6 +33,7 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = UserControllerUnitTestConfig.class, webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
+@ActiveProfiles("application")
 public class UserControllerRestAssuredTest {
     @MockBean
     private UserService userService;
@@ -43,7 +45,7 @@ public class UserControllerRestAssuredTest {
 
     @BeforeClass
     public static void init() {
-        RestAssured.port = 8080;
+        RestAssured.port = 9090;
         RestAssured.baseURI = "http://localhost";
     }
 

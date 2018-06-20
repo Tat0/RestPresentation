@@ -41,7 +41,7 @@ public class UserControllerRestAssuredTest {
     @Autowired
     private MockMvc mockMvc;
 
-    private static List<User> userList = new ArrayList<>();
+    private List<User> userList = new ArrayList<>();
 
     @Before
     public void setUp() {
@@ -50,8 +50,8 @@ public class UserControllerRestAssuredTest {
         userList.add(new User(2, "Volodya", "Chief", true));
         userList.add(new User(3, "Petro", "Developer", false));
         userList.add(new User(4, "Oleg", "Manager", false));
-        userList.add(new User(5, "Nazar", "Homeless", true));
-        userList.add(new User(6, "Adam", "Homeless", true));
+        userList.add(new User(5, "Nazar", "Developer", true));
+        userList.add(new User(6, "Adam", "Human", true));
     }
 
     @After

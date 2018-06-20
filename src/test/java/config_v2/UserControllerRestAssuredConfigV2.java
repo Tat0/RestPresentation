@@ -9,6 +9,7 @@ import services.UserService;
 
 @Configuration
 public class UserControllerRestAssuredConfigV2 {
+
     @Bean
     public UserController userController() {
         return new UserController();

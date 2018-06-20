@@ -1,11 +1,13 @@
 package controllers;
 
 import exceptions.advice.ControllerExceptionHandler;
-import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import services.UserService;
 
-@TestConfiguration
+@Configuration
+@EnableAutoConfiguration
 public class UserControllerUnitTestConfig {
     @Bean
     public UserController userController() {
@@ -26,6 +28,4 @@ public class UserControllerUnitTestConfig {
     public ControllerExceptionHandler controllerExceptionHandler() {
         return new ControllerExceptionHandler();
     }
-
-
 }
