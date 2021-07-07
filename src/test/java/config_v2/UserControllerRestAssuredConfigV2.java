@@ -1,14 +1,15 @@
-package controllers;
+package config_v2;
 
+import controllers.GreetingController;
+import controllers.UserController;
 import exceptions.advice.ControllerExceptionHandler;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import services.UserService;
 
 @Configuration
-@EnableAutoConfiguration
-public class UserControllerUnitTestConfig {
+public class UserControllerRestAssuredConfigV2 {
+
     @Bean
     public UserController userController() {
         return new UserController();

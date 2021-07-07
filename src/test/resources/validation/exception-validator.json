@@ -1,0 +1,29 @@
+{
+  "$id": "http://localhost:8080/exception",
+  "type": "object",
+  "definitions": {},
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "properties": {
+    "status": {
+      "$id": "/properties/status",
+      "type": "string",
+      "title": "The Status Schema ",
+      "default": "",
+      "examples": []
+    },
+    "message": {
+      "$id": "/properties/message",
+      "type": "string",
+      "title": "The Message Schema ",
+      "default": "",
+      "examples": []
+    },
+    "systemError": {
+      "$id": "/properties/systemError",
+      "type": "string",
+      "title": "The Systemerror Schema ",
+      "default": "",
+      "examples": []
+    }
+  }
+}

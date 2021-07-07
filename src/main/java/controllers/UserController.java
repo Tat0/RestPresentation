@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import services.UserService;
 
+import java.sql.SQLException;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -44,6 +45,7 @@ public class UserController {
      * Cache example
      * =================================================================================
      * */
+
     @GetMapping(value = "user/firstUser", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @Cacheable(value = "employeeID1")
     public ResponseEntity getCachedUser() {
@@ -74,7 +76,7 @@ public class UserController {
      * */
 
     @GetMapping(value = "user/{value}/org", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public User getUserOrg(@PathVariable long value) {
+    public User getUserOrganisation(@PathVariable long value) {
         return userService.getUserWithId(value);
     }
 
@@ -83,9 +85,9 @@ public class UserController {
         User user = userService.getUserWithId(value);
         UserWithLinks linkedUser = new UserWithLinks(user);
         linkedUser.add(linkTo(methodOn(UserController.class).getUserLinks(value)).withSelfRel());
-        linkedUser.add(linkTo(methodOn(UserController.class).getUserOrg(value)).withRel("Get users organization"));
-        linkedUser.add(linkTo(methodOn(UserController.class).updateUser(null)).withRel("Update with PUT method"));
-        linkedUser.add(linkTo(methodOn(UserController.class).updateUser(null)).withRel("Delete with DELETE method"));
+        linkedUser.add(linkTo(methodOn(UserController.class).getUserOrganisation(value)).withRel("Get_users_organization"));
+        linkedUser.add(linkTo(methodOn(UserController.class).updateUser(null)).withRel("Update_with_PUT_method"));
+        linkedUser.add(linkTo(methodOn(UserController.class).updateUser(null)).withRel("Delete_with_DELETE_method"));
         return linkedUser;
     }
 
